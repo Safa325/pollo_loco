@@ -1,59 +1,30 @@
-class MovableObjects {
-  x = 100;
-  y = 80;
-  img;
-  width = 150;
-  height = 250;
-  imageChache = {};
+class MovableObjects extends DrawableObject {
   speed = 0.15;
-  currentImage = 0;
   otherDirection = false;
   speedY = 0;
   acceleration = 2.5;
   energy = 100;
-
-  constructor() {}
-
-  draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-  }
-
-  drawFrame(ctx) {
-    if (
-      this instanceof Character ||
-      this instanceof Chicken ||
-      this instanceof Endboss
-    ) {
-      ctx.beginPath();
-      ctx.lineWidth = "5";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-    }
-  }
+  isHit = false;
+  i = 0;
 
   hit() {
-    this.energy -= 10;
+    this.energy -= 20;
+    this.isHurt();
+    console.log(this.energy);
     if (this.energy < 0) {
       this.energy = 0;
     }
   }
 
+  isHurt() {
+    this.isHit = true;
+    setTimeout(() => {
+      this.isHit = false;
+    }, 1500);
+  }
+
   isDead() {
     return this.energy == 0;
-  }
-
-  loadImage(path) {
-    this.img = new Image();
-    this.img.src = path;
-  }
-
-  loadImages(arr) {
-    arr.forEach((path) => {
-      this.img = new Image();
-      this.img.src = path;
-      this.imageChache[path] = this.img;
-    });
   }
 
   animationObject() {
@@ -63,10 +34,13 @@ class MovableObjects {
   }
 
   playAnimation(images) {
-    let i = this.currentImage % images.length;
-    let path = images[i];
-    this.img = this.imageChache[path];
-    this.currentImage++;
+    if (images.length > this.currentImage) {
+      let path = images[this.currentImage];
+      this.img = this.imageChache[path];
+      this.currentImage++;
+    } else {
+      this.currentImage = 0;
+    }
   }
 
   applyGravity() {
@@ -79,7 +53,11 @@ class MovableObjects {
   }
 
   isAboveGround() {
-    return this.y < 180;
+    if (this instanceof ThrowableObject) {
+      return true;
+    } else {
+      return this.y < 180;
+    }
   }
 
   isColliding(obj) {

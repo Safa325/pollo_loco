@@ -28,7 +28,6 @@ document.addEventListener("keydown", (event) => {
 document.addEventListener("keyup", (event) => {
   if (event.key === "d" || event.key === "ArrowRight") {
     keyboard.RIGHT = false;
-    console;
   }
   if (event.key === "a" || event.key === "ArrowLeft") {
     keyboard.LEFT = false;
