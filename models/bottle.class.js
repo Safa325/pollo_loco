@@ -7,5 +7,6 @@ class Bottles extends MovableObjects {
     super();
     this.x = Math.random() * 720 + x;
     this.loadImage(img);
+    this.hitBoxObject(15);
   }
 }

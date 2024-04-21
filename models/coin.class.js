@@ -1,6 +1,8 @@
 class Coin extends MovableObjects {
   height = 100;
   width = 100;
+  widthFix = 100;
+  heightFix = 100;
 
   IMAGES_COIN = ["/img/8_coin/coin_1.png", "/img/8_coin/coin_2.png"];
 
@@ -10,6 +12,7 @@ class Coin extends MovableObjects {
     this.y = Math.random() * 120 + 180;
     this.loadImage("/img/8_coin/coin_1.png");
     this.loadImages(this.IMAGES_COIN);
+    this.hitBoxObject(60);
   }
 
   animationImages() {

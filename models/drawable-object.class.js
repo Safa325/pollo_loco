@@ -6,10 +6,9 @@ class DrawableObject {
   height = 250;
   xHit;
   yHit;
-  widthHit;
-  heightHit;
-  size;
-
+  wHit;
+  hHit;
+  originalAspectRatio = this.width / this.height;
   imageChache = {};
   currentImage = 0;
 
@@ -20,6 +19,13 @@ class DrawableObject {
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
+  }
+
+  hitBoxObject(crr) {
+    this.xHit = this.x + crr / 2;
+    this.yHit = this.y + crr / 2;
+    this.wHit = this.width - crr;
+    this.hHit = this.height - crr;
   }
 
   loadImages(arr) {
@@ -36,21 +42,26 @@ class DrawableObject {
       this instanceof Chicken ||
       this instanceof Endboss ||
       this instanceof Bottles ||
-      this instanceof Coin
+      this instanceof Coin ||
+      this instanceof ChickenSmall
     ) {
       ctx.beginPath();
       ctx.lineWidth = "5";
       ctx.strokeStyle = "blue";
-      this.hitSizeW();
-      ctx.rect(this.xHit, this.yHit, this.widthHit, this.heightHit);
+      ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.lineWidth = "5";
+      ctx.strokeStyle = "red";
+      ctx.rect(this.xHit, this.yHit, this.wHit, this.hHit);
       ctx.stroke();
     }
   }
 
-  hitSizeW() {
-    this.widthHit = (this.width / 100) * 80;
-    this.heightHit = (this.height / 100) * 90;
-    this.xHit = this.x + this.width / 100;
-    this.yHit = this.y + (this.height / 100) * 10;
+  hitBox(crrX, crrY) {
+    this.xHit = this.x + crrX / 2;
+    this.yHit = this.y + crrY;
+    this.wHit = this.width - crrX;
+    this.hHit = this.height - crrY;
   }
 }

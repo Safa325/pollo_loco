@@ -10,7 +10,6 @@ class MovableObjects extends DrawableObject {
   hit() {
     this.energy -= 20;
     this.isHurt();
-    console.log(this.energy);
     if (this.energy < 0) {
       this.energy = 0;
     }
@@ -62,10 +61,20 @@ class MovableObjects extends DrawableObject {
 
   isColliding(obj) {
     return (
-      this.x + this.width >= obj.x &&
-      this.x <= obj.x + obj.width &&
-      this.y + this.height >= obj.y &&
-      this.y <= obj.y + obj.height
+      this.xHit + this.wHit >= obj.xHit &&
+      this.xHit <= obj.xHit + obj.wHit &&
+      this.yHit + this.hHit >= obj.yHit &&
+      this.yHit <= obj.yHit + obj.hHit
     );
   }
+
+  // isColliding(obj) {
+  //   console.log(this.x, this.width, obj.x, obj.width);
+  //   return (
+  //     this.x + this.width >= obj.x &&
+  //     this.x <= obj.x + obj.width &&
+  //     this.y + this.height >= obj.y &&
+  //     this.y <= obj.y + obj.height
+  //   );
+  // }
 }

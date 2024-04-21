@@ -4,9 +4,23 @@ class Clouds extends MovableObjects {
   y = 0;
   speed = 0.2;
 
-  constructor(imagePath) {
-    super().loadImage(imagePath);
-    this.x = Math.random() * 720;
+  IMAGES_CLOUDS = [
+    "/img/5_background/layers/4_clouds/1.png",
+    "img/5_background/layers/4_clouds/2.png",
+  ];
+
+  constructor(imgPath, x) {
+    super().loadImage(this.cloudImg(imgPath));
+    this.x = x + Math.random() * 720;
     this.animationObject();
+  }
+
+  cloudImg(x) {
+    if (x == 0) {
+      return this.IMAGES_CLOUDS[0];
+    }
+    if (x == 1) {
+      return this.IMAGES_CLOUDS[1];
+    }
   }
 }
