@@ -6,4 +6,7 @@ class Keyboard {
   SPACE = false;
   mouseX;
   mouseY;
+  scaleX;
+  scaleY;
+  loading = false;
 }

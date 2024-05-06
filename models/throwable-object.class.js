@@ -18,8 +18,9 @@ class ThrowableObject extends MovableObjects {
     "img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
   ];
 
-  constructor(x, y, img) {
+  constructor(x, y, img, visible = true) {
     super();
+    this.visible = visible;
     this.x = x;
     this.y = y;
     this.height = 60;

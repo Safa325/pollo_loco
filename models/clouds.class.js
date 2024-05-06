@@ -9,12 +9,17 @@ class Clouds extends MovableObjects {
     "img/5_background/layers/4_clouds/2.png",
   ];
 
-  constructor(imgPath, x) {
+  constructor(imgPath, x, visible = true) {
     super().loadImage(this.cloudImg(imgPath));
+    this.timerManager = TimerManager.getInstance();
+    this.visible = visible;
     this.x = x + Math.random() * 720;
-    this.animationObject();
+    this.startInterval();
   }
 
+  startInterval() {
+    this.timerManager.setInterval(() => this.animationObject(), 1000 / 60);
+  }
   cloudImg(x) {
     if (x == 0) {
       return this.IMAGES_CLOUDS[0];

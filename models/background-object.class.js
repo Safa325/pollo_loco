@@ -4,8 +4,9 @@ class BackgroundObject extends MovableObjects {
   x = 0;
   y = 0;
 
-  constructor(imagePath, x) {
+  constructor(imagePath, x, visible = true) {
     super().loadImage(imagePath);
+    this.visible = visible;
     this.x = x;
   }
 }

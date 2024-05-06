@@ -53,6 +53,71 @@ h1 {
   font-size: 24px;
 }
 
+.mobileDevice {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  flex-direction: column;
+  background-color: rgba(251, 250, 250, 0.9);
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.controller {
+  position: fixed;
+  display: none;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  padding: 16px;
+  z-index: 10;
+}
+
+.controller img {
+  height: 48px;
+  width: 48px;
+}
+
+.controller img:hover {
+  cursor: pointer;
+  scale: 0.95;
+}
+
+.moves {
+  display: flex;
+  margin-left: 32px;
+  width: 160px;
+  height: auto;
+  justify-content: space-between;
+}
+
+.action {
+  display: flex;
+  margin-left: 32px;
+  width: 120px;
+  height: auto;
+  justify-content: space-between;
+}
+
+body.fullscreen-active canvas {
+  height: 100%;
+  width: 100%;
+  border-radius: 0;
+}
+
+body.fullscreen-active h1 {
+  display: none;
+}
+
+body.fullscreen-active .description {
+  display: none;
+}
+
 @media only screen and (max-width: 720px) {
   canvas {
     width: 100%;
@@ -69,9 +134,11 @@ h1 {
   }
 }
 
-@media only screen and (max-height: 480px) {
+@media only screen and (max-height: 630px) {
   canvas {
     height: 100vh;
+    width: 100%;
+    border-radius: 0;
   }
 
   h1 {
@@ -81,12 +148,6 @@ h1 {
   .descripton {
     display: none;
   }
-}
-
-.fullSize {
-  width: 100%;
-
-  height: 100%;
 }
 
 .none {

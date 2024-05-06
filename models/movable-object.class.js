@@ -27,9 +27,7 @@ class MovableObjects extends DrawableObject {
   }
 
   animationObject() {
-    setInterval(() => {
-      this.x -= this.speed;
-    }, 1000 / 60);
+    this.x -= this.speed;
   }
 
   playAnimation(images) {
@@ -68,13 +66,7 @@ class MovableObjects extends DrawableObject {
     );
   }
 
-  // isColliding(obj) {
-  //   console.log(this.x, this.width, obj.x, obj.width);
-  //   return (
-  //     this.x + this.width >= obj.x &&
-  //     this.x <= obj.x + obj.width &&
-  //     this.y + this.height >= obj.y &&
-  //     this.y <= obj.y + obj.height
-  //   );
-  // }
+  smashEnemies(obj) {
+    return this.yhit + this.hHit == obj.yHit - 5 && this.yHit <= obj.yHit;
+  }
 }

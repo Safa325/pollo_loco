@@ -11,9 +11,14 @@ class DrawableObject {
   originalAspectRatio = this.width / this.height;
   imageChache = {};
   currentImage = 0;
+  timerManager;
+  sound = false;
+  visible;
 
   draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    if (this.visible) {
+      ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    }
   }
 
   loadImage(path) {
@@ -36,27 +41,27 @@ class DrawableObject {
     });
   }
 
-  drawFrame(ctx) {
-    if (
-      this instanceof Character ||
-      this instanceof Chicken ||
-      this instanceof Endboss ||
-      this instanceof Bottles ||
-      this instanceof Coin ||
-      this instanceof ChickenSmall
-    ) {
-      ctx.beginPath();
-      ctx.lineWidth = "5";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.lineWidth = "5";
-      ctx.strokeStyle = "red";
-      ctx.rect(this.xHit, this.yHit, this.wHit, this.hHit);
-      ctx.stroke();
-    }
-  }
+  // drawFrame(ctx) {
+  //   if (
+  //     this instanceof Character ||
+  //     this instanceof Chicken ||
+  //     this instanceof Endboss ||
+  //     this instanceof Bottles ||
+  //     this instanceof Coin ||
+  //     this instanceof ChickenSmall
+  //   ) {
+  //     ctx.beginPath();
+  //     ctx.lineWidth = "5";
+  //     ctx.strokeStyle = "blue";
+  //     ctx.rect(this.x, this.y, this.width, this.height);
+  //     ctx.stroke();
+  //     ctx.beginPath();
+  //     ctx.lineWidth = "5";
+  //     ctx.strokeStyle = "red";
+  //     ctx.rect(this.xHit, this.yHit, this.wHit, this.hHit);
+  //     ctx.stroke();
+  //   }
+  // }
 
   hitBox(crrX, crrY) {
     this.xHit = this.x + crrX / 2;

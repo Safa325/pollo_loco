@@ -25,6 +25,8 @@
     <script src="/models/coin.class.js"></script>
     <script src="/models/keyboard-object.class.js"></script>
     <script src="/models/level.class.js"></script>
+    <script src="/models/timerManager.class.js"></script>
+    <script src="/models/audio.class.js"></script>
     <script src="/models/endboss.class.js"></script>
     <script src="/models/throwable-object.class.js"></script>
     <script src="/models/button.class.js"></script>
@@ -33,13 +35,35 @@
     <title>El Pollo Loco</title>
   </head>
   <body class="" onload="init()">
+    <div class="mobileDevice none" id="mobileScreen">
+      Please rotate your device!
+      <img src="/img/Diverse/icons8-synchronisieren-64.png" alt="Rotate" />
+    </div>
     <h1 id="titel">El Pollo Loco</h1>
-    <canvas id="canvas" width="720px" height="480px"> </canvas>
+    <canvas id="canvas" width="720px" height="480px"></canvas>
     <div id="descripton" class="descripton">
       <p>Move left with A or Arow left</p>
       <p>Move right with D or Arow right</p>
       <p>Jump with W or Arow up</p>
       <p>Throw with Space</p>
+    </div>
+    <div id="controller" class="controller">
+      <div class="moves">
+        <div class="left" id="left">
+          <img src="/img/Diverse/icons8-links-64.png" alt="moveLeft" />
+        </div>
+        <div class="right" id="right">
+          <img src="/img/Diverse/icons8-rechts-64.png" alt="moveRight" />
+        </div>
+      </div>
+      <div class="action">
+        <div class="jump" id="jump">
+          <img src="/img/Diverse/icons8-pfeil_-einklappen-64.png" alt="jump" />
+        </div>
+        <div class="throw" id="throw">
+          <img src="/img/Diverse/icons8-molotov-cocktail-64.png" alt="throw" />
+        </div>
+      </div>
     </div>
   </body>
 </html>
