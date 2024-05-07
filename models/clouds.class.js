@@ -5,8 +5,8 @@ class Clouds extends MovableObjects {
   speed = 0.2;
 
   IMAGES_CLOUDS = [
-    "/img/5_background/layers/4_clouds/1.png",
-    "img/5_background/layers/4_clouds/2.png",
+    "./img/5_background/layers/4_clouds/1.png",
+    "./img/5_background/layers/4_clouds/2.png",
   ];
 
   constructor(imgPath, x, visible = true) {

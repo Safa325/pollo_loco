@@ -1,8 +1,8 @@
 class Buttons extends DrawableObject {
-  IMAGES_AUDIO = ["/img/Diverse/sound.png", "/img/Diverse/mute.png"];
-  IMAGES_SCREEN = ["/img/Diverse/big.png", "/img/Diverse/small.png"];
+  IMAGES_AUDIO = ["./img/Diverse/sound.png", "./img/Diverse/mute.png"];
+  IMAGES_SCREEN = ["./img/Diverse/big.png", "./img/Diverse/small.png"];
   IMAGE_RESTART = "";
-  IMAGE_PLAY = "/img/Diverse/play.png";
+  IMAGE_PLAY = "./img/Diverse/play.png";
 
   index;
   direction = "down";
