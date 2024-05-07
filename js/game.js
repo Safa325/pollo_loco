@@ -10,6 +10,10 @@ let rect;
 let responsivH;
 let responsivW;
 
+/**
+ * Initializes the application's main elements and handlers.
+ * Sets up the canvas, world object, title, description, and calculates responsive dimensions.
+ */
 function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
@@ -20,6 +24,11 @@ function init() {
   responsivW = rect.width / 720;
 }
 
+/**
+ * Event listener for keydown events to handle keyboard controls.
+ * Updates the keyboard object based on the user's key presses.
+ * @param {KeyboardEvent} event - The event object representing a keydown.
+ */
 document.addEventListener("keydown", (event) => {
   if (event.key === "d" || event.key === "ArrowRight") {
     keyboard.RIGHT = true;
@@ -35,6 +44,11 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+/**
+ * Event listener for keyup events to handle keyboard controls.
+ * Updates the keyboard object based on the user's key releases.
+ * @param {KeyboardEvent} event - The event object representing a keyup.
+ */
 document.addEventListener("keyup", (event) => {
   if (event.key === "d" || event.key === "ArrowRight") {
     keyboard.RIGHT = false;
@@ -50,6 +64,11 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
+/**
+ * Handles touch start events on screen controls for mobile or touch-screen users.
+ * Sets the appropriate movement flags in the keyboard object.
+ * @param {string} id - The ID of the touch control that was activated.
+ */
 function handleTouchStart(id) {
   switch (id) {
     case "left":
@@ -67,6 +86,10 @@ function handleTouchStart(id) {
   }
 }
 
+/**
+ * Handles touch end events on screen controls, resetting the appropriate movement flags.
+ * @param {string} id - The ID of the touch control that was deactivated.
+ */
 function handleTouchEnd(id) {
   switch (id) {
     case "left":
@@ -84,12 +107,19 @@ function handleTouchEnd(id) {
   }
 }
 
+/**
+ * Initializes touch and mouse control handling after the DOM has fully loaded.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   let controller = document.getElementById("controller");
   toucheController(controller);
   mouseController(controller);
 });
 
+/**
+ * Adds event listeners for touch interactions on the specified controller.
+ * @param {HTMLElement} controller - The element that responds to touch interactions.
+ */
 function toucheController(controller) {
   controller.addEventListener(
     "touchstart",
@@ -109,6 +139,10 @@ function toucheController(controller) {
   );
 }
 
+/**
+ * Adds event listeners for mouse interactions on the specified controller.
+ * @param {HTMLElement} controller - The element that responds to mouse interactions.
+ */
 function mouseController(controller) {
   controller.addEventListener("mousedown", function (event) {
     let actionId = event.target.closest("div[id]").id;
@@ -121,6 +155,9 @@ function mouseController(controller) {
   });
 }
 
+/**
+ * Toggles CSS classes for enabling fullscreen mode and hides other UI elements.
+ */
 function addCssFullSize() {
   if (world.fullSize === true) {
     canvas.classList.add("fullSize");
@@ -135,6 +172,9 @@ function addCssFullSize() {
   }
 }
 
+/**
+ * Adjusts UI scaling in response to window resizing.
+ */
 window.addEventListener("resize", function (event) {
   rect = canvas.getBoundingClientRect();
   responsivH = rect.height / 480;
@@ -142,6 +182,9 @@ window.addEventListener("resize", function (event) {
   checkDeviceAndOrientation();
 });
 
+/**
+ * Handles mouse click events for interaction within the canvas.
+ */
 document.addEventListener("click", function (event) {
   rect = canvas.getBoundingClientRect();
   let mouseX = event.clientX - rect.left;
@@ -153,6 +196,9 @@ document.addEventListener("click", function (event) {
   checkChlick(keyboard.mouseX, keyboard.mouseY);
 });
 
+/**
+ * Tracks mouse movement over the canvas and interacts with UI elements if applicable.
+ */
 document.addEventListener("mousemove", function (event) {
   if (canvas) {
     canvas = document.getElementById("canvas");
@@ -164,20 +210,29 @@ document.addEventListener("mousemove", function (event) {
     }
   }
 });
-
+/**
+ * Checks if the coordinates (x, y) are within the boundaries of the specified button.
+ * This function adjusts for responsive screen sizes.
+ * @param {number} x - The x-coordinate to check.
+ * @param {number} y - The y-coordinate to check.
+ * @param {Object} btn - The button object with properties x, y, width, and height.
+ * @returns {boolean} True if the coordinates are within the button's boundaries, false otherwise.
+ */
 function checkBtn(x, y, btn) {
-  if (
+  return (
     x >= btn.x * responsivW &&
-    x <= btn.x * responsivW + btn.width * responsivW &&
+    x <= (btn.x + btn.width) * responsivW &&
     y >= btn.y * responsivH &&
-    y <= btn.y * responsivH + btn.height * responsivH
-  ) {
-    return true;
-  } else {
-    return false;
-  }
+    y <= (btn.y + btn.height) * responsivH
+  );
 }
 
+/**
+ * Handles the cursor style on hover over interactive buttons.
+ * Changes cursor to pointer if over a button, otherwise defaults to the default cursor.
+ * @param {number} x - The x-coordinate of the mouse position.
+ * @param {number} y - The y-coordinate of the mouse position.
+ */
 function hoverBtn(x, y) {
   let isCursorOverButton = false;
 
@@ -193,6 +248,9 @@ function hoverBtn(x, y) {
   }
 }
 
+/**
+ * Determines the device type and orientation to adjust UI components accordingly.
+ */
 function checkDeviceAndOrientation() {
   let screenElement = document.getElementById("mobileScreen");
   let controller = document.querySelector(".controller");
@@ -206,6 +264,11 @@ function checkDeviceAndOrientation() {
   }
 }
 
+/**
+ * Checks if the current device is a mobile device based on the user agent string.
+ * @param {string} userAgent - The navigator's user agent string.
+ * @returns {boolean} True if the device is mobile, false otherwise.
+ */
 function checkIfMobileDevice(userAgent) {
   return (
     /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -214,6 +277,12 @@ function checkIfMobileDevice(userAgent) {
   );
 }
 
+/**
+ * Adjusts the screen layout based on device orientation.
+ * @param {ScreenOrientation} orientation - The current orientation of the device.
+ * @param {HTMLElement} screenElement - The element representing the mobile screen display.
+ * @param {HTMLElement} controller - The controller element for the game.
+ */
 function changeScreen(orientation, screenElement, controller) {
   if (orientation.type.startsWith("portrait")) {
     screenElement.classList.remove("none");
@@ -224,6 +293,9 @@ function changeScreen(orientation, screenElement, controller) {
   }
 }
 
+/**
+ * Initializes event listeners for device orientation and DOM content loaded.
+ */
 function initializeEventListeners() {
   document.addEventListener("DOMContentLoaded", () => {
     checkDeviceAndOrientation();
@@ -236,6 +308,10 @@ function initializeEventListeners() {
 
 initializeEventListeners();
 
+/**
+ * Requests fullscreen mode for the specified element.
+ * @param {HTMLElement} element - The element to display in fullscreen.
+ */
 function enterFullscreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
@@ -251,6 +327,9 @@ function enterFullscreen(element) {
   }
 }
 
+/**
+ * Exits fullscreen mode, if active.
+ */
 function exitFullscreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
@@ -266,6 +345,9 @@ function exitFullscreen() {
   }
 }
 
+/**
+ * Toggles the fullscreen state of the page.
+ */
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
     enterFullscreen(document.documentElement);
@@ -276,19 +358,23 @@ function toggleFullscreen() {
   }
 }
 
+/**
+ * Determines if a click is on a button and triggers a specific action if it is.
+ * @param {number} x - The x-coordinate of the click.
+ * @param {number} y - The y-coordinate of the click.
+ */
 function checkChlick(x, y) {
   world.buttons.forEach((button, index) => {
-    if (
-      x >= button.x * keyboard.scaleX &&
-      x <= button.x * keyboard.scaleX + button.width * keyboard.scaleX &&
-      y >= button.y * keyboard.scaleY &&
-      y <= button.y * keyboard.scaleY + button.height * keyboard.scaleY
-    ) {
+    if (checkBtn(x, y, button)) {
       this.buttonClicked(index);
     }
   });
 }
 
+/**
+ * Executes an action based on the button clicked.
+ * @param {number} btn - The index of the button that was clicked.
+ */
 function buttonClicked(btn) {
   if (btn == 1) {
     toggleFullscreen();
