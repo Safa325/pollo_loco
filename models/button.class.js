@@ -1,14 +1,8 @@
 class Buttons extends DrawableObject {
-  IMAGES_AUDIO = [
-    "/img/Diverse/icons8-hohe-lautstärke-64.png",
-    "/img/Diverse/icons8-kein-ton-64.png",
-  ];
-  IMAGES_SCREEN = [
-    "/img/Diverse/icons8-an-breite-anpassen-64.png",
-    "/img/Diverse/icons8-normaler-bildschirm-64.png",
-  ];
-  IMAGE_RESTART = "/img/Diverse/icons8-wiederholung-64.png";
-  IMAGE_PLAY = "/img/Diverse/—Pngtree—game play button design ui_7886752.png";
+  IMAGES_AUDIO = ["/img/Diverse/sound.png", "/img/Diverse/mute.png"];
+  IMAGES_SCREEN = ["/img/Diverse/big.png", "/img/Diverse/small.png"];
+  IMAGE_RESTART = "";
+  IMAGE_PLAY = "/img/Diverse/play.png";
 
   index;
   direction = "down";
