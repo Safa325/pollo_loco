@@ -154,11 +154,15 @@ document.addEventListener("click", function (event) {
 });
 
 document.addEventListener("mousemove", function (event) {
-  rect = canvas.getBoundingClientRect();
-  let mouseX = event.clientX - rect.left;
-  let mouseY = event.clientY - rect.top;
-
-  hoverBtn(mouseX, mouseY);
+  if (canvas) {
+    canvas = document.getElementById("canvas");
+    rect = canvas.getBoundingClientRect();
+    let mouseX = event.clientX - rect.left;
+    let mouseY = event.clientY - rect.top;
+    if (world && world.buttons) {
+      hoverBtn(mouseX, mouseY);
+    }
+  }
 });
 
 function checkBtn(x, y, btn) {

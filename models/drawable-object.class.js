@@ -14,6 +14,7 @@ class DrawableObject {
   timerManager;
   sound = false;
   visible;
+  audioManager;
 
   draw(ctx) {
     if (this.visible) {

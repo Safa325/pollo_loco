@@ -22,7 +22,7 @@ class World {
   levelLoaded = false;
   timerManager;
   audioManager;
-  getObjectFromPool;
+  smash = false;
 
   constructor(canvas, keyboard, visible = true) {
     this.visible = visible;
@@ -33,22 +33,6 @@ class World {
     this.keyboard = keyboard;
     this.loadingPage();
     this.draw();
-  }
-
-  // playAudio(audio) {
-  //   if (this.sound === true) {
-  //     this.audioManager.audios.forEach((audios) => {
-  //       if (audio == audios) {
-  //         audio.play();
-  //       }
-  //     });
-  //   }
-  // }
-
-  playAudio(audio) {
-    if (this.sound === true) {
-      this.audioManager.playAudio(audio);
-    }
   }
 
   loadingPage() {
@@ -85,10 +69,19 @@ class World {
     if (this.levelLoaded === true) {
       if (this.character.end === true) {
         this.timerManager.clearAllIntervals();
+        this.audioManager.playBackground(
+          this.audioManager.gameOver,
+          false,
+          this.audioManager.gameOverIndex
+        );
+        this.audioManager.pauseAudio(this.audioManager.background);
+        this.audioManager.pauseAudio(this.audioManager.bossSound);
         this.showButton(320);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.addToMap(this.gameOver);
         this.addObjectsToMap(this.buttons);
+        this.audioManager.gameOverIndex = true;
+        this.audioManager.backgroundIndex = true;
       }
     }
   }
@@ -98,10 +91,17 @@ class World {
       let i = this.level.enemies.length - 1;
       if (this.level.enemies[i].done === true) {
         this.timerManager.clearAllIntervals();
+        this.audioManager.playBackground(
+          this.audioManager.sucess,
+          false,
+          this.audioManager.sucessIndex
+        );
+        this.audioManager.pauseAudio(this.audioManager.bossSound);
         this.showButton(355);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.addToMap(this.sucsses);
         this.addObjectsToMap(this.buttons);
+        this.audioManager.sucessIndex = true;
       }
     }
   }
@@ -135,10 +135,22 @@ class World {
     }
   }
 
+  checkSmash() {
+    this.level.enemies.forEach((enemy) => {
+      if (this.character.smashEnemies(enemy)) {
+        this.smash = true;
+        this.audioManager.playAudio(this.audioManager.breeze, false);
+        enemy.die();
+        this.character.smashJump();
+        this.afterAction();
+      }
+    });
+  }
+
   checkCollision() {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
-        if (this.character.isHit === false) {
+        if (this.character.isHit === false && !this.smash) {
           this.character.hit();
           this.statusbar[1].setPercentage(this.character.energy, 1);
         }
@@ -146,14 +158,10 @@ class World {
     });
   }
 
-  checkSmash() {
-    this.level.enemies.forEach((enemy) => {
-      if (this.character.smashEnemies(enemy)) {
-        if (this.character.isHit === false) {
-          console.log("smash");
-        }
-      }
-    });
+  afterAction() {
+    setTimeout(() => {
+      this.smash = false;
+    }, 1000);
   }
 
   checkCollisionBoss() {
@@ -176,7 +184,7 @@ class World {
     this.level.enemies[i].endBossHurt = true;
     let splashIndex = this.throwableObject[index];
     let splash = new ThrowableObject(splashIndex.x, splashIndex.y, 2);
-
+    this.audioManager.playAudio(this.audioManager.splash, false);
     this.throwableObject[index] = splash;
     this.bossHP -= 20;
     this.statusbar[3].setPercentage(this.bossHP, 4);
@@ -190,7 +198,7 @@ class World {
 
   checkBottle() {
     this.level.bottles.forEach((bottel, index) => {
-      if (this.character.isColliding(bottel)) {
+      if (this.character.isCollidingObj(bottel)) {
         this.bottleCaunt += 20;
         this.level.bottles.splice(index, 1);
         this.statusbar[0].setPercentage(this.bottleCaunt, 2);
@@ -200,9 +208,10 @@ class World {
 
   checkCoin() {
     this.level.coin.forEach((coin, index) => {
-      if (this.character.isColliding(coin)) {
+      if (this.character.isCollidingObj(coin)) {
         this.coinCaunt += 20;
         this.level.coin.splice(index, 1);
+        this.audioManager.playAudio(this.audioManager.coin);
         this.statusbar[2].setPercentage(this.coinCaunt, 3);
       }
     });
@@ -240,7 +249,6 @@ class World {
     this.startGame();
     this.gameSucsses();
     this.gameIsOver();
-
     let self = this;
     requestAnimationFrame(function () {
       self.draw();
@@ -281,6 +289,11 @@ class World {
 
   startGame() {
     if (this.gameIsStarted === true) {
+      this.audioManager.playBackground(
+        this.audioManager.background,
+        true,
+        this.audioManager.backgroundIndex
+      );
       this.updateCamera();
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.ctx.translate(this.camera_x, 0);
@@ -336,17 +349,25 @@ class World {
       this.hideButton();
       this.loadWorld();
       this.gameIsStarted = true;
+      this.resetIndex();
     }
     this.keyboard.mouseX = 0;
     this.keyboard.mouseY = 0;
   }
 
+  resetIndex() {
+    this.audioManager.backgroundIndex = false;
+    this.audioManager.gameOverIndex = false;
+    this.audioManager.sucessIndex = false;
+    this.audioManager.bossSoundIndex = false;
+  }
+
   soundOnOff() {
-    if (this.sound === false) {
-      this.sound = true;
+    if (this.audioManager.sound === "off") {
+      this.audioManager.sound = "on";
       this.buttons[0] = new Buttons(1, 650, 5, 25, 25);
     } else {
-      this.sound = false;
+      this.audioManager.sound = "off";
       this.buttons[0] = new Buttons(2, 650, 5, 25, 25);
     }
   }
@@ -365,6 +386,9 @@ class World {
     let i = this.level.enemies.length - 1;
     if (this.character.x == 2100) {
       this.level.enemies[i].alert = true;
+      this.audioManager.playAudio(this.audioManager.bossSound, true);
+      this.audioManager.backgroundIndex = true;
+      this.audioManager.pauseAudio(this.audioManager.background);
     }
   }
 

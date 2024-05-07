@@ -57,6 +57,7 @@ class Endboss extends MovableObjects {
     super();
     this.visible = visible;
     this.timerManager = TimerManager.getInstance();
+    this.audioManager = AudioManager.getInstance();
     this.loadImages(this.IMAGES_ALERT);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_ATTACK);
@@ -71,7 +72,7 @@ class Endboss extends MovableObjects {
     this.timerManager.setInterval(() => this.animationAlert(), 125);
     this.timerManager.setInterval(() => this.animationWalking(), 100);
     this.timerManager.setInterval(() => this.animationHurt(), 100);
-    this.timerManager.setInterval(() => this.animationDead(), 340);
+    this.timerManager.setInterval(() => this.animationDead(), 100);
     this.timerManager.setInterval(() => this.animationObject(), 1000 / 60);
   }
 
@@ -97,6 +98,7 @@ class Endboss extends MovableObjects {
   animationHurt() {
     if (this.endBossHurt === true && !this.endBossDead) {
       this.playAnimation(this.IMAGES_HURT);
+      this.audioManager.playAudio(this.audioManager.chicken, false);
       this.speed = 0;
       this.walking = false;
       setTimeout(() => {
@@ -126,4 +128,6 @@ class Endboss extends MovableObjects {
       this.done = true;
     }, 500);
   }
+
+  die() {}
 }

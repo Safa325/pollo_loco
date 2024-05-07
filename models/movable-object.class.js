@@ -6,6 +6,12 @@ class MovableObjects extends DrawableObject {
   energy = 100;
   isHit = false;
   i = 0;
+  timerManager;
+
+  constructor() {
+    super();
+    this.timerManager = TimerManager.getInstance();
+  }
 
   hit() {
     this.energy -= 20;
@@ -40,6 +46,15 @@ class MovableObjects extends DrawableObject {
     }
   }
 
+  isCollidingObj(obj) {
+    return (
+      this.xHit + this.wHit >= obj.xHit &&
+      this.xHit <= obj.xHit + obj.wHit &&
+      this.yHit + this.hHit >= obj.yHit &&
+      this.yHit <= obj.yHit + obj.hHit
+    );
+  }
+
   applyGravity() {
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -62,11 +77,18 @@ class MovableObjects extends DrawableObject {
       this.xHit + this.wHit >= obj.xHit &&
       this.xHit <= obj.xHit + obj.wHit &&
       this.yHit + this.hHit >= obj.yHit &&
-      this.yHit <= obj.yHit + obj.hHit
+      this.yHit <= obj.yHit + obj.hHit &&
+      !this.isAboveGround()
     );
   }
 
   smashEnemies(obj) {
-    return this.yhit + this.hHit == obj.yHit - 5 && this.yHit <= obj.yHit;
+    return (
+      this.xHit + this.wHit >= obj.xHit &&
+      this.xHit <= obj.xHit + obj.wHit &&
+      this.yHit + this.hHit >= obj.yHit &&
+      this.yHit <= obj.yHit + obj.hHit &&
+      this.isAboveGround()
+    );
   }
 }
