@@ -17,9 +17,19 @@ class Clouds extends MovableObjects {
     this.startInterval();
   }
 
+  /**
+   * Starts the interval for object animations.
+   * Sets an interval to call the animationObject method at a specified frequency.
+   */
   startInterval() {
     this.timerManager.setInterval(() => this.animationObject(), 1000 / 60);
   }
+
+  /**
+   * Returns the appropriate cloud image based on the provided index.
+   * @param {number} x - The index to determine which cloud image to return.
+   * @returns {string} The path to the selected cloud image.
+   */
   cloudImg(x) {
     if (x == 0) {
       return this.IMAGES_CLOUDS[0];

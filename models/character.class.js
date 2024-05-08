@@ -71,6 +71,7 @@ class Character extends MovableObjects {
   constructor(visible = true) {
     super();
     this.visible = visible;
+
     this.timerManager = TimerManager.getInstance();
     this.audioManager = AudioManager.getInstance();
     this.loadImage("./img/2_character_pepe/1_idle/idle/I-1.png");
@@ -84,7 +85,10 @@ class Character extends MovableObjects {
     this.applyGravity();
     this.animatCharacter();
   }
-
+  /**
+   * Animates the character by setting up various intervals for different animations and movements.
+   * This includes general movement, game over check, dead animation, jump animation, hurt animation, walking animation, and idle animation.
+   */
   animatCharacter() {
     this.timerManager.setInterval(
       () => (this.moves(), this.gameOver()),
@@ -101,6 +105,10 @@ class Character extends MovableObjects {
     this.timerManager.setInterval(() => this.idleAnimation(), 1000 / 3);
   }
 
+  /**
+   * Moves the character to the left if the LEFT key is pressed and the character is not at the left edge of the world.
+   * Updates the camera position, plays audio, and updates the hitbox.
+   */
   moveLeft() {
     if (this.world.keyboard.LEFT && this.x > 0) {
       this.x -= this.speed;
@@ -112,8 +120,12 @@ class Character extends MovableObjects {
     this.hitBox(65, 120);
   }
 
+  /**
+   * Moves the character to the right if the RIGHT key is pressed and the character is not at the right edge of the world.
+   * Updates the camera position, plays audio, and updates the hitbox.
+   */
   moveRight() {
-    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+    if (this.world.keyboard.RIGHT && this.x < 2600) {
       this.x += this.speed;
       this.otherDirection = false;
       this.world.camera_x = -this.x + 100;
@@ -123,6 +135,10 @@ class Character extends MovableObjects {
     this.hitBox(65, 120);
   }
 
+  /**
+   * Makes the character jump if the UP key is pressed and the character is on the ground.
+   * Updates the speed in the Y direction and the hitbox.
+   */
   jump() {
     if (this.world.keyboard.UP && !this.isAboveGround()) {
       this.speedY = 25;
@@ -131,18 +147,28 @@ class Character extends MovableObjects {
     }
   }
 
+  /**
+   * Makes the character perform a smash jump.
+   * Updates the speed in the Y direction and the hitbox.
+   */
   smashJump() {
     this.speedY = 20;
     this.hitBox(65, 120);
     this.cancelIdleLongAnimation();
   }
-
+  /**
+   * Handles all movement-related actions for the character, including jumping, moving left, and moving right.
+   */
   moves() {
     this.jump();
     this.moveRight();
     this.moveLeft();
   }
 
+  /**
+   * Plays the dead animation if the character is dead and not at the end of the game.
+   * Adjusts the character's vertical speed and updates the dead index.
+   */
   deadAnimation() {
     if (this.isDead() && !this.end) {
       this.playAnimation(this.IMAGES_DEAD);
@@ -155,13 +181,21 @@ class Character extends MovableObjects {
     }
   }
 
+  /**
+   * Sets the game state to end after a delay if the character's dead index is 1.
+   */
   gameOver() {
-    if (this.deadIndex == 1)
+    if (this.deadIndex == 1) {
       setTimeout(() => {
         this.end = true;
       }, 800);
+    }
   }
 
+  /**
+   * Plays the hurt animation if the character is hit.
+   * Pauses hurt audio if the character is dead, otherwise plays the hurt audio.
+   */
   hurtAnimation() {
     if (this.isDead()) {
       this.audioManager.pauseAudio(this.audioManager.hurt);
@@ -171,17 +205,25 @@ class Character extends MovableObjects {
     }
   }
 
+  /**
+   * Plays the jump animation if the character is in the air.
+   * Pauses jump audio if the character is dead or hit.
+   */
   jumpAnimation() {
     if (this.isDead()) {
-      this.audioManager.pauseAudio(this.audioManager.jump, false);
+      this.audioManager.pauseAudio(this.audioManager.jump);
     } else if (this.isHit === true) {
-      this.audioManager.pauseAudio(this.audioManager.jump, false);
+      this.audioManager.pauseAudio(this.audioManager.jump);
     } else if (this.isAboveGround()) {
       this.audioManager.playAudio(this.audioManager.jump, false);
       this.playAnimation(this.IMAGES_JUMPING);
     }
   }
 
+  /**
+   * Plays the walking animation if the character is walking.
+   * Pauses movement audio if the character is dead, hit, or in the air.
+   */
   walkingAnimation() {
     if (this.isDead()) {
       this.audioManager.pauseAudio(this.audioManager.moveLeft);
@@ -196,29 +238,52 @@ class Character extends MovableObjects {
       this.playAnimation(this.IMAGES_WALKING);
     }
   }
-
+  /**
+   * Handles the idle animation for the character.
+   * Checks if the idle animation should be canceled or triggered.
+   */
   idleAnimation() {
-    if (
+    if (this.shouldCancelIdleAnimation()) {
+      this.idleLong = false;
+      this.cancelIdleLongAnimation();
+    } else {
+      this.triggerIdleAnimation();
+    }
+  }
+
+  /**
+   * Determines if the idle animation should be canceled based on the character's state.
+   * @returns {boolean} True if the idle animation should be canceled, false otherwise.
+   */
+  shouldCancelIdleAnimation() {
+    return (
       this.isDead() ||
       this.isHit === true ||
       this.isAboveGround() ||
       this.world.keyboard.RIGHT ||
       this.world.keyboard.LEFT
-    ) {
-      this.idleLong = false;
-      this.cancelIdleLongAnimation();
-    } else {
-      this.playAnimation(this.IMAGES_IDLE);
-      if (!this.idleLong && !this.idleTimeout) {
-        this.idleTimeout = setTimeout(() => {
-          this.idleLong = true;
-        }, 10000);
-      } else if (this.idleLong) {
-        this.playAnimation(this.IMAGES_IDLELONG);
-      }
+    );
+  }
+
+  /**
+   * Triggers the idle animation.
+   * If the character has been idle for a long time, it triggers the long idle animation.
+   */
+  triggerIdleAnimation() {
+    this.playAnimation(this.IMAGES_IDLE);
+    if (!this.idleLong && !this.idleTimeout) {
+      this.idleTimeout = setTimeout(() => {
+        this.idleLong = true;
+      }, 10000);
+    } else if (this.idleLong) {
+      this.playAnimation(this.IMAGES_IDLELONG);
     }
   }
 
+  /**
+   * Cancels the long idle animation timeout.
+   * Clears the idle timeout if it exists.
+   */
   cancelIdleLongAnimation() {
     if (this.idleTimeout) {
       clearTimeout(this.idleTimeout);

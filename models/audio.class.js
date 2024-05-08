@@ -18,6 +18,20 @@ class AudioManager {
   gameOverIndex;
   sucessIndex;
   bossSoundIndex;
+  audios = [
+    this.moveLeft,
+    this.moveRight,
+    this.jump,
+    this.hurt,
+    this.background,
+    this.splash,
+    this.gameOver,
+    this.coin,
+    this.sucess,
+    this.breeze,
+    this.bossSound,
+    this.chicken,
+  ];
 
   static instance = null;
 
@@ -32,6 +46,10 @@ class AudioManager {
     this.bossSoundIndex = false;
   }
 
+  /**
+   * Returns the singleton instance of the AudioManager.
+   * @returns {AudioManager} The singleton instance of AudioManager.
+   */
   static getInstance() {
     if (!AudioManager.instance) {
       AudioManager.instance = new AudioManager();
@@ -39,6 +57,11 @@ class AudioManager {
     return AudioManager.instance;
   }
 
+  /**
+   * Plays a given audio element.
+   * @param {HTMLAudioElement} key - The audio element to play.
+   * @param {boolean} x - Whether the audio should loop.
+   */
   playAudio(key, x) {
     let audio = key;
     if (this.sound === "on") {
@@ -49,15 +72,36 @@ class AudioManager {
     }
   }
 
+  /**
+   * Pauses a given audio element.
+   * @param {HTMLAudioElement} key - The audio element to pause.
+   */
   pauseAudio(key) {
     let audio = key;
-
     audio.pause();
   }
 
+  /**
+   * Plays background music if sound is enabled.
+   * @param {HTMLAudioElement} key - The background audio element to play.
+   * @param {boolean} x - Whether the background audio should loop.
+   * @param {boolean} sound - Indicator of whether the sound should be played.
+   */
   playBackground(key, x, sound) {
     if (!sound) {
       this.playAudio(key, x);
     }
+  }
+
+  /**
+   * Pauses all audio elements currently being played.
+   * This method waits for a short delay before pausing all audio elements.
+   */
+  pauseAllAudios() {
+    setTimeout(() => {
+      this.audios.forEach((audio) => {
+        this.pauseAudio(audio);
+      });
+    }, 1000);
   }
 }

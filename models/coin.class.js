@@ -18,10 +18,18 @@ class Coin extends MovableObjects {
     this.startInterval();
   }
 
+  /**
+   * Starts the interval for image animations.
+   * Sets an interval to call the animationImages method every 100 milliseconds.
+   */
   startInterval() {
     this.timerManager.setInterval(() => this.animationImages(), 100);
   }
 
+  /**
+   * Plays the animation for coin images.
+   * Uses the IMAGES_COIN array to play the animation.
+   */
   animationImages() {
     this.playAnimation(this.IMAGES_COIN);
   }

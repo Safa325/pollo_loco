@@ -9,7 +9,7 @@ class DrawableObject {
   wHit;
   hHit;
   originalAspectRatio = this.width / this.height;
-  imageChache = {};
+  imageChache = [];
   currentImage = 0;
   timerManager;
   sound = false;
@@ -41,28 +41,6 @@ class DrawableObject {
       this.imageChache[path] = this.img;
     });
   }
-
-  // drawFrame(ctx) {
-  //   if (
-  //     this instanceof Character ||
-  //     this instanceof Chicken ||
-  //     this instanceof Endboss ||
-  //     this instanceof Bottles ||
-  //     this instanceof Coin ||
-  //     this instanceof ChickenSmall
-  //   ) {
-  //     ctx.beginPath();
-  //     ctx.lineWidth = "5";
-  //     ctx.strokeStyle = "blue";
-  //     ctx.rect(this.x, this.y, this.width, this.height);
-  //     ctx.stroke();
-  //     ctx.beginPath();
-  //     ctx.lineWidth = "5";
-  //     ctx.strokeStyle = "red";
-  //     ctx.rect(this.xHit, this.yHit, this.wHit, this.hHit);
-  //     ctx.stroke();
-  //   }
-  // }
 
   hitBox(crrX, crrY) {
     this.xHit = this.x + crrX / 2;

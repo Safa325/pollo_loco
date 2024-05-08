@@ -67,7 +67,10 @@ class Endboss extends MovableObjects {
     this.endBossAnimation();
     this.animationObject();
   }
-
+  /**
+   * Starts the intervals for various end boss animations.
+   * Sets intervals for alert, walking, hurt, dead, and object animations.
+   */
   endBossAnimation() {
     this.timerManager.setInterval(() => this.animationAlert(), 125);
     this.timerManager.setInterval(() => this.animationWalking(), 100);
@@ -76,6 +79,10 @@ class Endboss extends MovableObjects {
     this.timerManager.setInterval(() => this.animationObject(), 1000 / 60);
   }
 
+  /**
+   * Plays the walking animation if the end boss is walking.
+   * Updates the hitbox dimensions.
+   */
   animationWalking() {
     if (this.walking === true) {
       this.playAnimation(this.IMAGES_WALKING);
@@ -83,6 +90,10 @@ class Endboss extends MovableObjects {
     }
   }
 
+  /**
+   * Plays the alert animation if the end boss is alert.
+   * Updates the hitbox dimensions and transitions to walking after a delay.
+   */
   animationAlert() {
     if (this.alert === true) {
       this.playAnimation(this.IMAGES_ALERT);
@@ -90,11 +101,16 @@ class Endboss extends MovableObjects {
       setTimeout(() => {
         this.alert = false;
         this.walking = true;
-        this.speed = 0.5;
+        this.speed = 1;
       }, 2000);
     }
   }
 
+  /**
+   * Plays the hurt animation if the end boss is hurt and not dead.
+   * Plays the appropriate audio and updates movement state.
+   * Transitions back to walking after a delay.
+   */
   animationHurt() {
     if (this.endBossHurt === true && !this.endBossDead) {
       this.playAnimation(this.IMAGES_HURT);
@@ -104,13 +120,17 @@ class Endboss extends MovableObjects {
       setTimeout(() => {
         this.endBossHurt = false;
         this.walking = true;
-        this.speed = 0.5;
+        this.speed = 1;
       }, 1000);
     } else if (this.endBossDead === true) {
       this.playDead = true;
     }
   }
 
+  /**
+   * Plays the dead animation if the end boss is dead.
+   * Stops movement and loads the win page after the animation.
+   */
   animationDead() {
     if (this.playDead === true) {
       this.playAnimation(this.IMAGES_DEAD);
@@ -123,11 +143,19 @@ class Endboss extends MovableObjects {
     }
   }
 
+  /**
+   * Loads the win page after a short delay.
+   * Sets the end boss state to done.
+   */
   loadWinPage() {
     setTimeout(() => {
       this.done = true;
     }, 500);
   }
 
+  /**
+   * Placeholder for the die method.
+   * Can be used to define specific die behavior if needed.
+   */
   die() {}
 }
