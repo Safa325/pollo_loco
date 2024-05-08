@@ -12,7 +12,7 @@ class Coin extends MovableObjects {
     this.timerManager = TimerManager.getInstance();
     this.x = Math.random() * 720 + x;
     this.y = Math.random() * 120 + 180;
-    this.loadImage("/img/8_coin/coin_1.png");
+    this.loadImage("./img/8_coin/coin_1.png");
     this.loadImages(this.IMAGES_COIN);
     this.hitBoxObject(60);
     this.startInterval();
