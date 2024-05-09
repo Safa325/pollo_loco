@@ -78,7 +78,16 @@ class MovableObjects extends DrawableObject {
       this.xHit <= obj.xHit + obj.wHit &&
       this.yHit + this.hHit >= obj.yHit &&
       this.yHit <= obj.yHit + obj.hHit &&
-      !this.isAboveGround()
+      this.speedY >= 0
+    );
+  }
+
+  isCollidingBottle(obj) {
+    return (
+      this.xHit + this.wHit >= obj.xHit &&
+      this.xHit <= obj.xHit + obj.wHit &&
+      this.yHit + this.hHit >= obj.yHit &&
+      this.yHit <= obj.yHit + obj.hHit
     );
   }
 
@@ -88,7 +97,8 @@ class MovableObjects extends DrawableObject {
       this.xHit <= obj.xHit + obj.wHit &&
       this.yHit + this.hHit >= obj.yHit &&
       this.yHit <= obj.yHit + obj.hHit &&
-      this.isAboveGround()
+      this.isAboveGround() &&
+      this.speedY < 0
     );
   }
 }

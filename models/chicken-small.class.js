@@ -74,7 +74,7 @@ class ChickenSmall extends MovableObjects {
       this.x = 9999;
       this.xHit = this.x;
       this.yHit = this.y;
-    }, 700);
+    }, 300);
   }
 
   /**

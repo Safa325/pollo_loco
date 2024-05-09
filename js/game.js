@@ -124,18 +124,24 @@ function toucheController(controller) {
   controller.addEventListener(
     "touchstart",
     function (event) {
+      if (event.cancelable) {
+        event.preventDefault();
+      }
       let actionId = event.target.closest("div[id]").id;
       handleTouchStart(actionId);
     },
-    { passive: true }
+    { passive: false }
   );
   controller.addEventListener(
     "touchend",
     function (event) {
+      if (event.cancelable) {
+        event.preventDefault();
+      }
       let actionId = event.target.closest("div[id]").id;
       handleTouchEnd(actionId);
     },
-    { passive: true }
+    { passive: false }
   );
 }
 
@@ -145,11 +151,17 @@ function toucheController(controller) {
  */
 function mouseController(controller) {
   controller.addEventListener("mousedown", function (event) {
+    if (event.cancelable) {
+      event.preventDefault();
+    }
     let actionId = event.target.closest("div[id]").id;
     handleTouchStart(actionId);
   });
 
   controller.addEventListener("mouseup", function (event) {
+    if (event.cancelable) {
+      event.preventDefault();
+    }
     let actionId = event.target.closest("div[id]").id;
     handleTouchEnd(actionId);
   });

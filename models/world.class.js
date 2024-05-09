@@ -219,24 +219,6 @@ class World {
   }
 
   /**
-   * Checks if the character is smashing enemies.
-   * If an enemy is smashed, plays the appropriate audio, updates the state, and performs post-action updates.
-   */
-  checkSmash() {
-    this.level.enemies.forEach((enemy, index) => {
-      if (this.character.smashEnemies(enemy)) {
-        if (index !== this.level.enemies.length - 1) {
-          this.smash = true;
-          this.audioManager.playAudio(this.audioManager.breeze, false);
-          enemy.die();
-          this.character.smashJump();
-          this.afterAction();
-        }
-      }
-    });
-  }
-
-  /**
    * Checks for collisions between the character and enemies.
    * If a collision is detected and the character is not currently hit or smashing, it applies damage to the character.
    */
@@ -246,6 +228,28 @@ class World {
         if (this.character.isHit === false && !this.smash) {
           this.character.hit();
           this.statusbar[1].setPercentage(this.character.energy, 1);
+        }
+      }
+    });
+  }
+
+  /**
+   * Checks if the character is smashing enemies.
+   * If an enemy is smashed, plays the appropriate audio, updates the state, and performs post-action updates.
+   */
+  checkSmash() {
+    this.level.enemies.forEach((enemy, index) => {
+      if (
+        this.character.smashEnemies(enemy) &&
+        this.character.isHit === false &&
+        enemy.index == 1
+      ) {
+        if (index !== this.level.enemies.length - 1) {
+          this.smash = true;
+          this.audioManager.playAudio(this.audioManager.breeze, false);
+          enemy.die();
+          this.character.smashJump();
+          this.afterAction();
         }
       }
     });
@@ -267,7 +271,7 @@ class World {
   checkCollisionBoss() {
     let i = this.level.enemies.length - 1;
     this.throwableObject.forEach((bottel, index) => {
-      if (this.level.enemies[i].isColliding(bottel)) {
+      if (this.level.enemies[i].isCollidingBottle(bottel)) {
         if (this.bossHit === false) {
           this.collisonBoss(index);
           setTimeout(() => {

@@ -74,8 +74,8 @@ h1 {
   justify-content: space-between;
   align-items: flex-end;
   width: 100%;
-  padding: 16px;
-  z-index: 10;
+  height: 1px;
+  z-index: -0.9;
 }
 
 .controller img {
@@ -91,17 +91,21 @@ h1 {
 .moves {
   display: flex;
   margin-left: 16px;
+  margin-bottom: 16px;
   width: 96px;
   height: auto;
   justify-content: space-between;
+  z-index: 2;
 }
 
 .action {
   display: flex;
-  margin-left: 16px;
+  margin-right: 16px;
+  margin-bottom: 16px;
   width: 96px;
   height: auto;
   justify-content: space-between;
+  z-index: 2;
 }
 
 body.fullscreen-active canvas {

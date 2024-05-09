@@ -115,6 +115,7 @@ class Character extends MovableObjects {
       this.otherDirection = true;
       this.world.camera_x = -this.x + 100;
       this.cancelIdleLongAnimation();
+      this.resetSpeedY();
     }
     this.hitBox(65, 120);
   }
@@ -129,6 +130,7 @@ class Character extends MovableObjects {
       this.otherDirection = false;
       this.world.camera_x = -this.x + 100;
       this.cancelIdleLongAnimation();
+      this.resetSpeedY();
     }
     this.hitBox(65, 120);
   }
@@ -142,6 +144,12 @@ class Character extends MovableObjects {
       this.speedY = 25;
       this.hitBox(65, 120);
       this.cancelIdleLongAnimation();
+    }
+  }
+
+  resetSpeedY() {
+    if (!this.world.keyboard.UP && this.y >= 180) {
+      this.speedY = 0;
     }
   }
 
