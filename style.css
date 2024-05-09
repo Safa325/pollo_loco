@@ -79,8 +79,8 @@ h1 {
 }
 
 .controller img {
-  height: 48px;
-  width: 48px;
+  height: 32px;
+  width: 32px;
 }
 
 .controller img:hover {
@@ -90,16 +90,16 @@ h1 {
 
 .moves {
   display: flex;
-  margin-left: 32px;
-  width: 160px;
+  margin-left: 16px;
+  width: 96px;
   height: auto;
   justify-content: space-between;
 }
 
 .action {
   display: flex;
-  margin-left: 32px;
-  width: 120px;
+  margin-left: 16px;
+  width: 96px;
   height: auto;
   justify-content: space-between;
 }
@@ -129,14 +129,15 @@ body.fullscreen-active .description {
     font-size: 48px;
   }
 
-  .descripton p {
+  .description p {
     font-size: 16px;
   }
 }
 
 @media only screen and (max-height: 630px) {
   canvas {
-    height: 100vh;
+    position: absolute;
+    height: 100%;
     width: 100%;
     border-radius: 0;
   }
@@ -145,7 +146,7 @@ body.fullscreen-active .description {
     display: none;
   }
 
-  .descripton {
+  .description {
     display: none;
   }
 }

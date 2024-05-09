@@ -79,6 +79,7 @@ class AudioManager {
   pauseAudio(key) {
     let audio = key;
     audio.pause();
+    audio.currentTime = 0;
   }
 
   /**

@@ -115,7 +115,6 @@ class Character extends MovableObjects {
       this.otherDirection = true;
       this.world.camera_x = -this.x + 100;
       this.cancelIdleLongAnimation();
-      this.audioManager.playAudio(this.audioManager.moveLeft, false);
     }
     this.hitBox(65, 120);
   }
@@ -130,7 +129,6 @@ class Character extends MovableObjects {
       this.otherDirection = false;
       this.world.camera_x = -this.x + 100;
       this.cancelIdleLongAnimation();
-      this.audioManager.playAudio(this.audioManager.moveRight, false);
     }
     this.hitBox(65, 120);
   }
@@ -198,7 +196,6 @@ class Character extends MovableObjects {
    */
   hurtAnimation() {
     if (this.isDead()) {
-      this.audioManager.pauseAudio(this.audioManager.hurt);
     } else if (this.isHit === true) {
       this.playAnimation(this.IMAGES_HURT);
       this.audioManager.playAudio(this.audioManager.hurt, false);
@@ -211,9 +208,7 @@ class Character extends MovableObjects {
    */
   jumpAnimation() {
     if (this.isDead()) {
-      this.audioManager.pauseAudio(this.audioManager.jump);
     } else if (this.isHit === true) {
-      this.audioManager.pauseAudio(this.audioManager.jump);
     } else if (this.isAboveGround()) {
       this.audioManager.playAudio(this.audioManager.jump, false);
       this.playAnimation(this.IMAGES_JUMPING);
@@ -226,14 +221,8 @@ class Character extends MovableObjects {
    */
   walkingAnimation() {
     if (this.isDead()) {
-      this.audioManager.pauseAudio(this.audioManager.moveLeft);
-      this.audioManager.pauseAudio(this.audioManager.moveRight);
     } else if (this.isHit === true) {
-      this.audioManager.pauseAudio(this.audioManager.moveLeft);
-      this.audioManager.pauseAudio(this.audioManager.moveRight);
     } else if (this.isAboveGround()) {
-      this.audioManager.pauseAudio(this.audioManager.moveLeft);
-      this.audioManager.pauseAudio(this.audioManager.moveRight);
     } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
       this.playAnimation(this.IMAGES_WALKING);
     }
