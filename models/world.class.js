@@ -1,8 +1,3 @@
-/**
- * Represents the main game world where all interactions and events are handled.
- * This class manages the game state, handles the rendering of game objects, manages audio,
- * controls user interactions, and tracks game progress.
- */
 class World {
   intro;
   gameOver;
@@ -13,21 +8,15 @@ class World {
   ctx;
   keyboard;
   camera_x;
-  bottleCaunt;
   coinCaunt;
   statusbar;
-  bossHP;
-  bossHit;
   throwableObject;
-  throwableBottel;
   buttons;
-  sound = false;
   fullSize = false;
   gameIsStarted = false;
   levelLoaded = false;
   timerManager;
   audioManager;
-  smash = false;
 
   constructor(canvas, keyboard, visible = true) {
     this.visible = visible;
@@ -76,12 +65,8 @@ class World {
    */
   initializeState() {
     this.camera_x = 0;
-    this.bottleCaunt = 0;
     this.coinCaunt = 0;
-    this.bossHP = 100;
-    this.bossHit = false;
     this.throwableObject = [];
-    this.throwableBottel = false;
   }
 
   /**
@@ -94,22 +79,6 @@ class World {
       new Statusbar(3, 20, 80, 0),
       new Statusbar(4, 500, 25, 100),
     ];
-  }
-
-  /**
-   * Manages the audio playback when the game is over, including background and boss sound.
-   */
-  manageAudioOnGameOver() {
-    this.audioManager.playBackground(
-      this.audioManager.gameOver,
-      false,
-      this.audioManager.gameOverIndex
-    );
-    this.audioManager.pauseAudio(this.audioManager.background);
-    this.audioManager.pauseAudio(this.audioManager.bossSound);
-    this.audioManager.gameOverIndex = true;
-    this.audioManager.backgroundIndex = true;
-    this.audioManager.pauseAllAudios();
   }
 
   /**
@@ -130,23 +99,11 @@ class World {
     if (this.levelLoaded && this.character.end) {
       this.timerManager.clearAllIntervals();
       this.displayGameOverScreen();
-      this.manageAudioOnGameOver();
+      this.AudioManager.manageAudioOnGameOver(
+        this.gameOverIndex,
+        this.backgroundIndex
+      );
     }
-  }
-
-  /**
-   * Manages the audio playback when the game is successfully completed.
-   * Plays the success audio, pauses the boss sound, and pauses all other audios.
-   */
-  manageAudioOnSuccess() {
-    this.audioManager.playBackground(
-      this.audioManager.sucess,
-      false,
-      this.audioManager.sucessIndex
-    );
-    this.audioManager.pauseAudio(this.audioManager.bossSound);
-    this.audioManager.sucessIndex = true;
-    this.audioManager.pauseAllAudios();
   }
 
   /**
@@ -169,7 +126,7 @@ class World {
       this.level.enemies[this.level.enemies.length - 1].done
     ) {
       this.timerManager.clearAllIntervals();
-      this.manageAudioOnSuccess();
+      this.audioManager.manageAudioOnSuccess(this.sucessIndex);
       this.displaySuccessScreen();
     }
   }
@@ -208,138 +165,21 @@ class World {
    */
   run() {
     if (this.levelLoaded === true) {
-      this.checkCollision();
-      this.checkThrowObject();
-      this.checkBottle();
+      this.character.checkCollision(this.level, this.statusbar);
+      this.character.checkThrowObject(
+        this.throwableObject,
+        this.statusbar,
+        this.keyboard
+      );
+      this.character.checkBottle(this.level, this.statusbar);
       this.checkCoin();
-      this.checkCollisionBoss();
-      this.alertEndBoss();
-      this.checkSmash();
+      this.level.enemies[6].checkCollisionBoss(
+        this.throwableObject,
+        this.statusbar
+      );
+      this.level.enemies[6].alertEndBoss(this.character);
+      this.character.checkSmash(this.level);
     }
-  }
-
-  /**
-   * Checks for collisions between the character and enemies.
-   * If a collision is detected and the character is not currently hit or smashing, it applies damage to the character.
-   */
-  checkCollision() {
-    this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
-        if (this.character.isHit === false && !this.smash) {
-          this.character.hit();
-          this.statusbar[1].setPercentage(this.character.energy, 1);
-        }
-      }
-    });
-  }
-
-  /**
-   * Checks if the character is smashing enemies.
-   * If an enemy is smashed, plays the appropriate audio, updates the state, and performs post-action updates.
-   */
-  checkSmash() {
-    this.level.enemies.forEach((enemy, index) => {
-      if (
-        this.character.smashEnemies(enemy) &&
-        this.character.isHit === false &&
-        enemy.index == 1
-      ) {
-        if (index !== this.level.enemies.length - 1) {
-          this.smash = true;
-          this.audioManager.playAudio(this.audioManager.breeze, false);
-          enemy.die();
-          this.character.smashJump();
-          this.afterAction();
-        }
-      }
-    });
-  }
-
-  /**
-   * Resets the smash state after a delay.
-   */
-  afterAction() {
-    setTimeout(() => {
-      this.smash = false;
-    }, 1000);
-  }
-
-  /**
-   * Checks for collisions between throwable objects and the boss.
-   * If a collision is detected and the boss is not already hit, it handles the collision and removes the throwable object after a delay.
-   */
-  checkCollisionBoss() {
-    let i = this.level.enemies.length - 1;
-    this.throwableObject.forEach((bottel, index) => {
-      if (this.level.enemies[i].isCollidingBottle(bottel)) {
-        if (this.bossHit === false) {
-          this.collisonBoss(index);
-          setTimeout(() => {
-            this.throwableObject.splice(index, 1);
-          }, 230);
-        }
-      }
-    });
-  }
-
-  /**
-   * Handles the collision between a throwable object and the boss.
-   * Sets the boss hit state, creates a splash effect, handles the boss hit, and checks for boss death.
-   * @param {number} index - The index of the throwable object in the throwableObject array.
-   */
-  collisonBoss(index) {
-    this.bossHit = true;
-    this.level.enemies[this.level.enemies.length - 1].endBossHurt = true;
-    this.createSplashEffect(index);
-    this.handleBossHit();
-    this.checkBossDeath();
-  }
-
-  /**
-   * Handles the reduction of the boss's health and updates the status bar.
-   * Resets the boss hit state after a delay.
-   */
-  handleBossHit() {
-    this.bossHP -= 20;
-    this.statusbar[3].setPercentage(this.bossHP, 4);
-    setTimeout(() => {
-      this.bossHit = false;
-    }, 300);
-  }
-
-  /**
-   * Creates a splash effect at the location of the throwable object.
-   * Plays the splash audio.
-   * @param {number} index - The index of the throwable object in the throwableObject array.
-   */
-  createSplashEffect(index) {
-    let splashIndex = this.throwableObject[index];
-    let splash = new ThrowableObject(splashIndex.x, splashIndex.y, 2);
-    this.throwableObject[index] = splash;
-    this.audioManager.playAudio(this.audioManager.splash, false);
-  }
-
-  /**
-   * Checks if the boss's health is zero or below and sets the boss's dead state if true.
-   */
-  checkBossDeath() {
-    if (this.bossHP <= 0) {
-      this.level.enemies[this.level.enemies.length - 1].endBossDead = true;
-    }
-  }
-
-  /**
-   * Checks for collisions between the character and bottles.
-   * If a collision is detected, increases the bottle count, removes the bottle, and updates the status bar.
-   */
-  checkBottle() {
-    this.level.bottles.forEach((bottel, index) => {
-      if (this.character.isCollidingObj(bottel)) {
-        this.bottleCaunt += 20;
-        this.level.bottles.splice(index, 1);
-        this.statusbar[0].setPercentage(this.bottleCaunt, 2);
-      }
-    });
   }
 
   /**
@@ -355,57 +195,6 @@ class World {
         this.statusbar[2].setPercentage(this.coinCaunt, 3);
       }
     });
-  }
-
-  /**
-   * Checks if a throwable bottle can be created.
-   * If conditions are met, creates a bottle, updates the bottle count, and resets the throwable bottle state.
-   */
-  checkThrowObject() {
-    if (this.canThrowBottle()) {
-      this.createBottle();
-      this.updateBottleCount();
-      this.resetThrowableBottle();
-    }
-  }
-
-  /**
-   * Determines if a bottle can be thrown.
-   * @returns {boolean} True if a bottle can be thrown, false otherwise.
-   */
-  canThrowBottle() {
-    return this.keyboard.SPACE && !this.throwableBottel && this.bottleCaunt > 0;
-  }
-
-  /**
-   * Creates a new throwable bottle and adds it to the throwable objects array.
-   */
-  createBottle() {
-    let bottle = new ThrowableObject(
-      this.character.x + 50,
-      this.character.y + 100,
-      1,
-      this.character.otherDirection
-    );
-    this.throwableObject.push(bottle);
-  }
-
-  /**
-   * Updates the bottle count and updates the status bar.
-   */
-  updateBottleCount() {
-    this.bottleCaunt -= 20;
-    this.statusbar[0].setPercentage(this.bottleCaunt, 2);
-  }
-
-  /**
-   * Resets the state of the throwable bottle after a delay.
-   */
-  resetThrowableBottle() {
-    this.throwableBottel = true;
-    setTimeout(() => {
-      this.throwableBottel = false;
-    }, 600);
   }
 
   /**
@@ -629,19 +418,6 @@ class World {
     } else {
       this.fullSize = false;
       this.buttons[1] = new Buttons(3, 680, 5, 25, 25);
-    }
-  }
-
-  /**
-   * Alerts the end boss when the character reaches a specific position and plays the boss sound.
-   */
-  alertEndBoss() {
-    let i = this.level.enemies.length - 1;
-    if (this.character.x == 2000) {
-      this.level.enemies[i].alert = true;
-      this.audioManager.playAudio(this.audioManager.bossSound, true);
-      this.audioManager.backgroundIndex = true;
-      this.audioManager.pauseAudio(this.audioManager.background);
     }
   }
 

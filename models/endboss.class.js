@@ -9,6 +9,8 @@ class Endboss extends MovableObjects {
   endBossDead = false;
   playDead = false;
   done = false;
+  bossHP = 100;
+  bossHit = false;
 
   IMAGES_ALERT = [
     "./img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -153,9 +155,103 @@ class Endboss extends MovableObjects {
     }, 500);
   }
 
+  // /**
+  //  * Placeholder for the die method.
+  //  * Can be used to define specific die behavior if needed.
+  //  */
+  // die() {}
+
   /**
-   * Placeholder for the die method.
-   * Can be used to define specific die behavior if needed.
+   * Checks for collisions between throwable objects and the boss.
+   * If a collision is detected and the boss is not already hit, it handles the collision and removes the throwable object after a delay.
    */
-  die() {}
+  checkCollisionBoss(throwableObject, statusbar) {
+    throwableObject.forEach((bottel, index) => {
+      if (this.isCollidingBottle(bottel)) {
+        if (this.bossHit === false) {
+          this.collisonBoss(index, statusbar, throwableObject);
+          setTimeout(() => {
+            throwableObject.splice(index, 1);
+          }, 230);
+        }
+      }
+    });
+  }
+
+  /**
+   * Handles the collision between a throwable object and the boss.
+   * Sets the boss hit state, creates a splash effect, handles the boss hit, and checks for boss death.
+   * @param {number} index - The index of the throwable object in the throwableObject array.
+   */
+  collisonBoss(index, statusbar, throwableObject) {
+    this.bossHit = true;
+    this.endBossHurt = true;
+    this.createSplashEffect(index, throwableObject);
+    this.handleBossHit(statusbar);
+    this.checkBossDeath();
+  }
+
+  /**
+   * Handles the reduction of the boss's health and updates the status bar.
+   * Resets the boss hit state after a delay.
+   */
+  handleBossHit(statusbar) {
+    this.bossHP -= 20;
+    statusbar[3].setPercentage(this.bossHP, 4);
+    setTimeout(() => {
+      this.bossHit = false;
+    }, 300);
+  }
+
+  /**
+   * Creates a splash effect at the location of the throwable object.
+   * Plays the splash audio.
+   * @param {number} index - The index of the throwable object in the throwableObject array.
+   */
+  createSplashEffect(index, throwableObject) {
+    let splashIndex = throwableObject[index];
+    let splash = new ThrowableObject(splashIndex.x, splashIndex.y, 2);
+    throwableObject[index] = splash;
+    this.audioManager.playAudio(this.audioManager.splash, false);
+  }
+
+  /**
+   * Checks if the boss's health is zero or below and sets the boss's dead state if true.
+   */
+  checkBossDeath() {
+    if (this.bossHP <= 0) {
+      this.endBossDead = true;
+    }
+  }
+
+  /**
+   * Alerts the end boss when the character reaches a specific position and plays the boss sound.
+   */
+  alertEndBoss(character) {
+    if (character.x == 2000 && !this.walking) {
+      this.alert = true;
+      this.audioManager.playAudio(this.audioManager.bossSound, true);
+      this.audioManager.backgroundIndex = true;
+      this.audioManager.pauseAudio(this.audioManager.background);
+    }
+    if (this.walking === true) {
+      this.followCharacter(character);
+    }
+  }
+
+  /**
+   * Adjusts the object's speed and direction to follow the specified character.
+   * If the object is to the left of the character, it moves left and faces left.
+   * If the object is to the right of the character, it moves right and faces right.
+   * @param {Object} character - The character to follow.
+   */
+  followCharacter(character) {
+    if (this.x <= character.x) {
+      this.speed = -1;
+      this.otherDirection = true;
+    } else {
+      this.speed = 1;
+      this.otherDirection = false;
+    }
+  }
 }

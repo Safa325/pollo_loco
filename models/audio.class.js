@@ -105,4 +105,27 @@ class AudioManager {
       });
     }, 1000);
   }
+
+  /**
+   * Manages the audio playback when the game is successfully completed.
+   * Plays the success audio, pauses the boss sound, and pauses all other audios.
+   */
+  manageAudioOnSuccess(sucessIndex) {
+    this.playBackground(this.sucess, false, sucessIndex);
+    this.pauseAudio(this.bossSound);
+    sucessIndex = true;
+    this.pauseAllAudios();
+  }
+
+  /**
+   * Manages the audio playback when the game is over, including background and boss sound.
+   */
+  manageAudioOnGameOver(gameOverIndex, backgroundIndex) {
+    this.playBackground(this.gameOver, false, gameOverIndex);
+    this.pauseAudio(this.background);
+    this.pauseAudio(this.bossSound);
+    gameOverIndex = true;
+    backgroundIndex = true;
+    this.pauseAllAudios();
+  }
 }

@@ -67,6 +67,9 @@ class Character extends MovableObjects {
   end = false;
   idleTimeout = null;
   idleLong = false;
+  smash = false;
+  bottleCaunt = 0;
+  throwableBottel = false;
 
   constructor(visible = true) {
     super();
@@ -286,5 +289,116 @@ class Character extends MovableObjects {
       clearTimeout(this.idleTimeout);
       this.idleTimeout = null;
     }
+  }
+
+  /**
+   * Checks for collisions between the character and enemies.
+   * If a collision is detected and the character is not currently hit or smashing, it applies damage to the character.
+   */
+  checkCollision(level, statusbar) {
+    level.enemies.forEach((enemy) => {
+      if (this.isColliding(enemy)) {
+        if (this.isHit === false && !this.smash) {
+          this.hit();
+          statusbar[1].setPercentage(this.energy, 1);
+        }
+      }
+    });
+  }
+
+  /**
+   * Checks if the character is smashing enemies.
+   * If an enemy is smashed, plays the appropriate audio, updates the state, and performs post-action updates.
+   */
+  checkSmash(level) {
+    level.enemies.forEach((enemy, index) => {
+      if (
+        this.smashEnemies(enemy) &&
+        this.isHit === false &&
+        enemy.index == 1
+      ) {
+        if (index !== level.enemies.length - 1) {
+          this.smash = true;
+          this.audioManager.playAudio(this.audioManager.breeze, false);
+          enemy.die();
+          this.smashJump();
+          this.afterAction();
+        }
+      }
+    });
+  }
+
+  /**
+   * Resets the smash state after a delay.
+   */
+  afterAction() {
+    setTimeout(() => {
+      this.smash = false;
+    }, 1000);
+  }
+
+  /**
+   * Checks for collisions between the character and bottles.
+   * If a collision is detected, increases the bottle count, removes the bottle, and updates the status bar.
+   */
+  checkBottle(level, statusbar) {
+    level.bottles.forEach((bottel, index) => {
+      if (this.isCollidingObj(bottel)) {
+        this.bottleCaunt += 20;
+        level.bottles.splice(index, 1);
+        statusbar[0].setPercentage(this.bottleCaunt, 2);
+      }
+    });
+  }
+
+  /**
+   * Checks if a throwable bottle can be created.
+   * If conditions are met, creates a bottle, updates the bottle count, and resets the throwable bottle state.
+   */
+  checkThrowObject(throwableObject, statusbar, keyboard) {
+    if (this.canThrowBottle(keyboard)) {
+      this.createBottle(throwableObject);
+      this.updateBottleCount(statusbar);
+      this.resetThrowableBottle();
+    }
+  }
+
+  /**
+   * Determines if a bottle can be thrown.
+   * @returns {boolean} True if a bottle can be thrown, false otherwise.
+   */
+  canThrowBottle(keyboard) {
+    return keyboard.SPACE && !this.throwableBottel && this.bottleCaunt > 0;
+  }
+
+  /**
+   * Creates a new throwable bottle and adds it to the throwable objects array.
+   */
+  createBottle(throwableObject) {
+    let bottle = new ThrowableObject(
+      this.x + 50,
+      this.y + 100,
+      1,
+      this.otherDirection
+    );
+    throwableObject.push(bottle);
+  }
+
+  /**
+   * Updates the bottle count and updates the status bar.
+   */
+  updateBottleCount(statusbar) {
+    this.bottleCaunt -= 20;
+    statusbar[0].setPercentage(this.bottleCaunt, 2);
+  }
+
+  /**
+   * Resets the state of the throwable bottle after a delay.
+   */
+  resetThrowableBottle() {
+    this.throwableBottel = true;
+    setTimeout(() => {
+      this.throwableBottel = false;
+    }, 600);
   }
 }
