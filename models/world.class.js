@@ -99,7 +99,7 @@ class World {
     if (this.levelLoaded && this.character.end) {
       this.timerManager.clearAllIntervals();
       this.displayGameOverScreen();
-      this.AudioManager.manageAudioOnGameOver(
+      this.audioManager.manageAudioOnGameOver(
         this.gameOverIndex,
         this.backgroundIndex
       );
